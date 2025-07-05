@@ -1,0 +1,33 @@
+{
+	"name": "obsidian-s3-securefetch",
+	"version": "1.0.0",
+	"description": "Automatically replaces S3 links with secure, time-limited pre-signed URLs for safe access to your private files.",
+	"main": "main.js",
+	"scripts": {
+		"dev": "node esbuild.config.mjs",
+		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"version": "node version-bump.mjs && git add manifest.json versions.json"
+	},
+	"keywords": [
+		"obsidian",
+		"s3",
+		"security",
+		"presigned-url"
+	],
+	"author": "berzdev",
+	"license": "MIT",
+	"dependencies": {
+		"@aws-sdk/client-s3": "^3.525.0",
+		"@aws-sdk/s3-request-presigner": "^3.525.0"
+	},
+	"devDependencies": {
+		"@types/node": "^16.11.6",
+		"@typescript-eslint/eslint-plugin": "5.29.0",
+		"@typescript-eslint/parser": "5.29.0",
+		"builtin-modules": "3.3.0",
+		"esbuild": "^0.25.5",
+		"obsidian": "latest",
+		"tslib": "2.4.0",
+		"typescript": "4.7.4"
+	}
+}
