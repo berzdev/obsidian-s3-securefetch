@@ -1,7 +1,7 @@
 {
 	"id": "s3-securefetch",
 	"name": "S3 SecureFetch",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "0.15.0",
 	"description": "Automatically replaces S3 links with secure, time-limited pre-signed URLs for safe access to your private files.",
 	"author": "berzdev",
