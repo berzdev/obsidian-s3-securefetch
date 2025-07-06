@@ -50,9 +50,6 @@ export default class S3SecureFetchPlugin extends Plugin {
 		});
 
 		this.addSettingTab(new S3SecureFetchSettingTab(this.app, this));
-
-		console.log('S3 SecureFetch Plugin loaded');
-		new Notice('S3 SecureFetch Plugin loaded');
 	}
 
 	onunload() {
@@ -60,7 +57,6 @@ export default class S3SecureFetchPlugin extends Plugin {
 		if (this.originalWindowOpen) {
 			window.open = this.originalWindowOpen;
 		}
-		console.log('S3 SecureFetch Plugin unloaded');
 	}
 
 	async loadSettings() {
@@ -140,7 +136,6 @@ export default class S3SecureFetchPlugin extends Plugin {
 
 		// Primärer Click Handler
 		newAnchor.addEventListener('click', async (event) => {
-			console.log('🔍 Click Interceptor ausgelöst für:', originalHref);
 			new Notice(`🔍 S3 Link Match erkannt: ${originalHref.substring(0, 50)}...`);
 			
 			event.preventDefault();
@@ -150,7 +145,6 @@ export default class S3SecureFetchPlugin extends Plugin {
 			const authenticatedUrl = await this.processUrl(storedOriginalUrl);
 			
 			new Notice(`🔒 S3 Authentication successful`);
-			console.log('🔐 Öffne signierte URL:', authenticatedUrl);
 			window.open(authenticatedUrl, '_blank');
 		}, true);
 
@@ -158,7 +152,6 @@ export default class S3SecureFetchPlugin extends Plugin {
 		newAnchor.addEventListener('mousedown', async (event) => {
 			// Für Mittelklick (Mausrad) und Strg+Klick
 			if (event.button === 1 || event.ctrlKey || event.metaKey) {
-				console.log('🔍 Mittelklick/Strg+Klick abgefangen für:', originalHref);
 				event.preventDefault();
 				event.stopPropagation();
 				
@@ -169,12 +162,6 @@ export default class S3SecureFetchPlugin extends Plugin {
 				window.open(authenticatedUrl, '_blank');
 			}
 		}, true);
-
-		// Handler für Kontextmenü
-		newAnchor.addEventListener('contextmenu', async (event) => {
-			console.log('🔍 Kontextmenü für S3 Link:', originalHref);
-			// Lassen wir das Kontextmenü zu, aber loggen es
-		});
 	}
 
 	private shouldInterceptLink(url: string): boolean {
@@ -308,7 +295,6 @@ export default class S3SecureFetchPlugin extends Plugin {
 								   linkElement.getAttribute('data-href');
 				
 				if (originalUrl && this.shouldInterceptLink(originalUrl)) {
-					console.log('🔍 S3 Link Click abgefangen:', originalUrl);
 					new Notice(`🔍 S3 Link erkannt: ${originalUrl.substring(0, 50)}...`);
 					
 					event.preventDefault();
@@ -321,35 +307,15 @@ export default class S3SecureFetchPlugin extends Plugin {
 			}
 		}, true);
 
-		// Zusätzlicher Handler für Obsidian-spezifische Link-Events
-		this.registerEvent(
-			this.app.workspace.on('file-open', (file) => {
-				// Wird ausgelöst wenn eine Datei geöffnet wird
-				if (file && file.path) {
-					console.log('🔍 File-open Event:', file.path);
-				}
-			})
-		);
-
-		// Handler für URL-Öffnungen über Obsidian
-		this.app.workspace.on('url-menu', (menu, url) => {
-			if (this.shouldInterceptLink(url)) {
-				console.log('🔍 URL-Menu Event für S3 Link:', url);
-			}
-		});
-
 		// Interceptor für window.open Aufrufe
 		this.originalWindowOpen = window.open;
 		window.open = (url?: string | URL, target?: string, features?: string) => {
 			if (url) {
 				const urlString = url.toString();
 				if (this.shouldInterceptLink(urlString)) {
-					console.log('🔍 window.open abgefangen für S3 Link:', urlString);
-					
 					// Generiere signierte URL und öffne diese stattdessen
 					this.processUrl(urlString).then(authenticatedUrl => {
 						new Notice(`🔒 S3 Authentication successful`);
-						console.log('🔐 Öffne signierte URL:', authenticatedUrl);
 						this.originalWindowOpen.call(window, authenticatedUrl, target, features);
 					}).catch(error => {
 						console.error('Fehler beim Verarbeiten der URL:', error);
